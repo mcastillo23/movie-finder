@@ -7,7 +7,6 @@ from flask import Blueprint, request, jsonify, render_template, redirect, flash
 from app.movie_finder import get_movie_recommendations
 
 routes = Blueprint("routes", __name__)
-routes.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 @routes.route("/")
 def finder():
