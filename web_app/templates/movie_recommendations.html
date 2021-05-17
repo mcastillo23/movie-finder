@@ -1,0 +1,27 @@
+{% extends "bootstrap_layout.html" %}
+{% set active_page = "Results" %}
+
+{% block content %}
+
+ <div class="jumbotron text-center">
+    <h1>Movie Recommendations</h1>  
+    <br>
+  </div>
+
+  <ul>
+    {% for movie in results %}
+
+        <!-- Header - set the background image for the header in the line below-->
+        <header class="py-5 bg-image-full" style="background-image: url('{{'https://image.tmdb.org/t/p/original' + movie["backdrop_path"] }}'); background-size: 100% 100%; background-repeat: no-repeat"><img class="img-thumbnail d-block mx-auto" src="{{'https://image.tmdb.org/t/p/original' + movie["poster_path"] }}" width=20% height=20%></header>
+        <!-- Content section-->
+        <section class="py-5">
+            <div class="container">
+                <h1>{{ movie["original_title"] }}</h1>
+                <p class="lead">{{ movie["release_date"] }}</p>
+                <p>{{ movie["overview"] }}</p>
+            </div>
+        </section>
+    {% endfor %}
+    </ul>
+
+{% endblock %}
