@@ -11,11 +11,11 @@ load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY", default="super secret") 
 
 def create_app():
-    app = Flask(_name_)
+    app = Flask(__name__)
     app.config["SECRET_KEY"] = SECRET_KEY
     app.register_blueprint(routes)
     return app
 
-if _name_ == "_main_":
+if __name__ == "_main_":
     my_app = create_app()
     my_app.run(debug=True)
