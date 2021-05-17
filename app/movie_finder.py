@@ -109,3 +109,15 @@ request_url = f"https://api.themoviedb.org/3/discover/movie?api_key={API_KEY}{fe
 response = requests.get(request_url)
    
 parsed_response = json.loads(response.text)
+
+if parsed_response["total_results"] == 0:
+    print("Sorry, couldn't find any movie for those criteria.")
+    exit()
+
+#Response
+print("Here are your top 5 recommendations based on your inputs:")
+print("1. " + parsed_response["results"][0]["original_title"])
+print("2. " + parsed_response["results"][1]["original_title"])
+print("3. " + parsed_response["results"][2]["original_title"])
+print("4. " + parsed_response["results"][3]["original_title"])
+print("5. " + parsed_response["results"][4]["original_title"])
