@@ -101,3 +101,11 @@ elif sort.lower() == valid_sorts[1]:
     features.append("&sort_by=revenue.desc")
 elif sort.lower() == valid_sorts[2]:
     features.append("&sort_by=vote_average.desc")
+
+#API request
+
+request_url = f"https://api.themoviedb.org/3/discover/movie?api_key={API_KEY}{features[0]}{features[1]}{features[2]}{features[3]}" 
+
+response = requests.get(request_url)
+   
+parsed_response = json.loads(response.text)
