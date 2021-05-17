@@ -31,93 +31,62 @@ load_dotenv()
 
 API_KEY = os.getenv("ALPHAVANTAGE_API_KEY")
 
-features = []
+def get_movie_recommendations (genre, year, certification, sort):
+    """
+    Fetches movies from the Movies API, for a given genre, year, certification, and sorting criteria.
 
-#Movie Criteria User Inputs
-   
-valid_genres = [item["genre"] for item in genres]
-valid_certifications = ["G", "PG-13", "R", "NC-17", "NR", "PG"]
-   
-genre = input("Would you like to search by genre? (Yes or No)")
+    Params:
+        genre (str) the requested genre, like "action"
+        year (str) the requested year, like "2020"
+        certification (str) the requested year, like "PG-13"
+        sort (str) the requested sorting method, like "popularity"
 
-if genre.upper() == "YES":
-    selected_genre = input("Which genre would you like to search by? (ie. Drama)")
-    if selected_genre.lower() not in valid_genres:
-        print("Hey, are you sure that the genre is correct? Please try again!")
+    Example:
+        result = get_movie_recommendations(genre="action", year="2020", certification="PG-13", sort="popularity")
+
+    Returns the movie as a parsed resposne with its attributes such as "original_title" and "release_date".
+    """
+    features = []
+
+    #inputs
+    for item in genres:
+        if genre.lower() == item["genre"]:
+            features.append("&with_genres=" + str(item["id"]))
+    
+    if len(features) == 0:
+        features.append("")
+
+    features.append("&primary_release_year=" + str(year))
+
+    features.append("&certification_country=US&certification.lte=" + str(certification.upper()))
+
+    valid_sorts = ["popularity", "revenue", "rating"]
+
+    if sort.lower() == valid_sorts[0]:
+        features.append("&sort_by=popularity.desc")
+    elif sort.lower() == valid_sorts[1]:
+        features.append("&sort_by=revenue.desc")
+    elif sort.lower() == valid_sorts[2]:
+        features.append("&sort_by=vote_average.desc&vote_count.gte=1000")
+
+    #API request            
+    request_url = f"https://api.themoviedb.org/3/discover/movie?api_key={API_KEY}{features[0]}&with_original_language=en{features[1]}{features[2]}{features[3]}"  
+
+    response = requests.get(request_url)
+
+    parsed_response = json.loads(response.text)
+
+    #output
+    if parsed_response["total_results"] < 5:
+        return "Sorry, couldn't find enough movies for those criteria."
         exit()
-    else:
-        for item in genres:
-            if selected_genre.lower() == item["genre"]:
-                features.append("&with_genres=" + str(item["id"]))
-elif genre.upper() == "NO":
-    features.append("")
-else:
-    print("Please enter a valid response and try again. (Yes or No)")
-    exit()
-   
-year = input("Would you like to search by year? (Yes or No)")
-   
-if year.upper() == "YES":
-    selected_year = int(input("Which year would you like to search by? (1900-2021)"))
-    if selected_year < 1900 or selected_year > 2021:
-        print("Hey, are you sure that the year is correct? Please try again!")
-        exit()
-    else:
-        features.append("&primary_release_year=" + str(selected_year))
-elif year.upper() == "NO":
-    features.append("")
-else:
-    print("Please enter a valid response and try again. (Yes or No)")
-    exit()
-   
-   
-certification = input("Would you like to search by certification? (Yes or No)")
-   
-if certification.upper() == "YES":
-    selected_certification = input("Which certification would you like to search by? (G, PG-13, R, NC-17, NR, PG)")
-    if selected_certification.upper() not in valid_certifications:
-        print("Hey, are you sure that the certification is correct? Please try again!")
-        exit()
-    else:
-        features.append("&certification_country=US&certification.lte=" + str(selected_certification.upper()))
-elif certification.upper() == "NO":
-    features.append("")
-else:
-    print("Please enter a valid response and try again. (Yes or No)")
-    exit()
-   
-#Movie Sorting User Inputs
-   
-valid_sorts = ["popularity", "revenue", "rating"]
-   
-sort = input("How would you like to sort your movie results? (Popularity, Revenue, or Rating)")
-   
-if sort.lower() not in valid_sorts:
-        print("Hey, are you sure that the sorting criteria is correct? Please try again!")
-        exit()
-elif sort.lower() == valid_sorts[0]:
-    features.append("&sort_by=popularity.desc")
-elif sort.lower() == valid_sorts[1]:
-    features.append("&sort_by=revenue.desc")
-elif sort.lower() == valid_sorts[2]:
-    features.append("&sort_by=vote_average.desc")
 
-#API request
+    recommendations = []
 
-request_url = f"https://api.themoviedb.org/3/discover/movie?api_key={API_KEY}{features[0]}{features[1]}{features[2]}{features[3]}" 
+    recommendations.append(parsed_response["results"][0])
+    recommendations.append(parsed_response["results"][1])
+    recommendations.append(parsed_response["results"][2])
+    recommendations.append(parsed_response["results"][3])
+    recommendations.append(parsed_response["results"][4])
 
-response = requests.get(request_url)
-   
-parsed_response = json.loads(response.text)
-
-if parsed_response["total_results"] == 0:
-    print("Sorry, couldn't find any movie for those criteria.")
-    exit()
-
-#Response
-print("Here are your top 5 recommendations based on your inputs:")
-print("1. " + parsed_response["results"][0]["original_title"])
-print("2. " + parsed_response["results"][1]["original_title"])
-print("3. " + parsed_response["results"][2]["original_title"])
-print("4. " + parsed_response["results"][3]["original_title"])
-print("5. " + parsed_response["results"][4]["original_title"])
+    return recommendations
