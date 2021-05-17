@@ -1,0 +1,6 @@
+requests
+python-dotenv
+pandas
+Flask
+gunicorn
+pytest
