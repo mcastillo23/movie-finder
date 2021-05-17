@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+    <h1>Criteria</h1>
+
+    <p>This web app generates 5 movie recommendations based on your movie criteria. Please input a Genre, Year, and Certification below. Click on the upper right corner for a list of possible Genres or Certifications.</p>
+
+    <form action="/movie/recommendations" method="POST">
+
+        <label>Genre:</label>
+        <input type="text" name="genre" placeholder="Action" value="Action">
+        <br>
+
+        <p></p>
+
+        <label>Year:</label>
+        <input type="text" name="year" placeholder="2020" value="2020">
+        <br>
+
+        <p></p>
+
+        <label>Certification:</label>
+        <input type="text" name="certification" placeholder="PG-13" value="PG-13">
+        <br>
+
+        <p></p>
+
+        <p>Then, chose wether you want your recommendations to be sorted by popularity, top grossing, or rating. Input 'Popularity', 'Revenue', or 'Rating'.</p>
+
+        <label>Sorting Criteria:</label>
+        <input type="text" name="sort" placeholder="Popularity" value="Popularity">
+        <br>
+
+        <p></p>
+
+        <button>Search</button>
+    </form>
+
+{% endblock %}
