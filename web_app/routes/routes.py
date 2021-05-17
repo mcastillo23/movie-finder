@@ -6,6 +6,9 @@ from flask import Flask
 from flask import Blueprint, request, jsonify, render_template, redirect, flash
 from app.movie_finder import get_movie_recommendations
 
+routes = Blueprint("routes", _name_)
+routes.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+
 @routes.route("/")
 def finder():
     return render_template("movie_finder.html")
@@ -36,8 +39,8 @@ def movie_recommendations():
 
     results = get_movie_recommendations(genre=genre, year=year, certification=certification, sort=sort)
     if len(results) == 5:
-        #flash("Recommendations Generated Successfully!", "success")
+        flash("Recommendations Generated Successfully!", "success")
         return render_template("movie_recommendations.html", genre=genre, year=year, certification=certification, sort=sort, results=results)
     else:
-        #flash("Sorry, couldn't find enough movies for those criteria.", "danger")
+        flash("Sorry, couldn't find enough movies for those criteria.", "danger")
         return redirect("/")
